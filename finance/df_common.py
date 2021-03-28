@@ -58,8 +58,14 @@ class LEVELS:
   WARN = "WARN"
   ERROR = "ERROR"
 
-def writeLog(level: LEVELS, ws_name, message, records):
-  sh = main_sheet
+
+def clear_log(sh=main_sheet):
+  #clear Log worksheet
+  empty_log = pd.DataFrame(columns=["timestamp",	"level",	"worksheet_name",	"message", "record"])
+  df2ws(sh, "Log", empty_log, resize=False)
+
+def writeLog(level: LEVELS, ws_name, message, records, sh=main_sheet):
+#  sh = main_sheet
   ws = "Log"
   eastern = timezone('US/Eastern')
   ts = str(datetime.now(eastern))
