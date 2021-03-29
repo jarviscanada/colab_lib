@@ -89,7 +89,7 @@ def is_subset(list_a, list_b):
 def add_gp_col(df):
   required_header = ['hours' ,'bill_rate' ,'pay_rate', 'vendor_fee_rate' ,'payroll_fee_rate']
   if not is_subset(df.columns.tolist(), required_header):
-    msg = f'Missing headers. Require {",".join(gp_header)}. Found {",".join(df.columns.tolist())}'
+    msg = f'Missing headers. Require {",".join(required_header)}. Found {",".join(df.columns.tolist())}'
     raise RuntimeError(msg)
   df["bill_amount"] = df.hours * df.bill_rate
   df["pay_amount"] = df.hours * df.pay_rate
@@ -101,7 +101,7 @@ def add_gp_col(df):
 def add_commission_col(df):
   required_header = ['gross_profit', 'commission_rate']
   if not is_subset(df.columns.tolist(), required_header):
-    msg = f'Missing headers. Require {",".join(gp_header)}. Found {",".join(df.columns.tolist())}'
+    msg = f'Missing headers. Require {",".join(required_header)}. Found {",".join(df.columns.tolist())}'
     raise RuntimeError(msg)
   df["commission_amount"] = df.gross_profit * df.commission_rate
   return df
