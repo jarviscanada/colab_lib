@@ -81,3 +81,28 @@ def writeLog(sheet, level: LEVELS, ws_name, message, records):
   log_df = ws2df(sh, ws, {})
   log_df = log_df.append(record_df)
   df2ws(sh, ws, log_df)
+  
+def is_subset(list_a, list_b):
+  '''check if list_b is a subset of list_a'''
+  return all([item in list_a for item in list_b])
+
+def add_gp_col(df):
+  required_header = ['hours' ,'bill_rate' ,'pay_rate', 'vendor_fee_rate' ,'payroll_fee_rate']
+  if not is_subset(df.columns.tolist(), required_header):
+    msg = f'Missing headers. Require {",".join(gp_header)}. Found {",".join(df.columns.tolist())}'
+    raise RuntimeError(msg)
+  df["bill_amount"] = df.hours * df.bill_rate
+  df["pay_amount"] = df.hours * df.pay_rate
+  df["vendor_fee"] = df.bill_amount * df.vendor_fee_rate
+  df["payroll_fee"] = df.pay_amount * df.payroll_fee_rate
+  df["gross_profit"] = df.bill_amount - df.pay_amount - df.vendor_fee - df.payroll_fee
+  return df
+
+def add_commission_col(df):
+  required_header = ['gross_profit', 'commission_rate']
+  if not is_subset(df.columns.tolist(), required_header):
+    msg = f'Missing headers. Require {",".join(gp_header)}. Found {",".join(df.columns.tolist())}'
+    raise RuntimeError(msg)
+  df["commission_amount"] = df.gross_profit * df.commission_rate
+  return df
+
