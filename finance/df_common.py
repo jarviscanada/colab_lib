@@ -80,4 +80,4 @@ def writeLog(sheet, level: LEVELS, ws_name, message, records):
 
   log_df = ws2df(sh, ws, {})
   log_df = log_df.append(record_df)
-  df2ws(main_sheet, ws, log_df)
+  df2ws(sh, ws, log_df)
