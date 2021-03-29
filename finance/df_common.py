@@ -59,13 +59,13 @@ class LEVELS:
   ERROR = "ERROR"
 
 
-def clear_log(sh=main_sheet):
+def clear_log(sheet):
   #clear Log worksheet
   empty_log = pd.DataFrame(columns=["timestamp",	"level",	"worksheet_name",	"message", "record"])
-  df2ws(sh, "Log", empty_log, resize=False)
+  df2ws(sheet, "Log", empty_log, resize=False)
 
-def writeLog(level: LEVELS, ws_name, message, records, sh=main_sheet):
-#  sh = main_sheet
+def writeLog(sheet, level: LEVELS, ws_name, message, records):
+  sh = sheet
   ws = "Log"
   eastern = timezone('US/Eastern')
   ts = str(datetime.now(eastern))
