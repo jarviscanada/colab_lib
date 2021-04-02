@@ -5,8 +5,6 @@ from datetime import timedelta
 from datetime import datetime
 from pandas.tseries.offsets import MonthEnd
 from google.colab import auth
-import gspread
-from oauth2client.client import GoogleCredentials
 import numpy as np
 from gspread_dataframe import get_as_dataframe, set_with_dataframe
 import pytz
