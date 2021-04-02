@@ -39,7 +39,7 @@ def ws2df(sheet, ws_str, dtype_map):
   return df.astype(dtype_map)
 
 
-def df2ws(sheet, ws_name, df, is_new_ws=False, include_index=False, resize=True):
+def df2ws(sheet, ws_name, df, is_new_ws=False, include_index=False, resize=false):
   try:
     ws = sheet.worksheet(ws_name)
   except:
