@@ -106,3 +106,76 @@ def add_commission_col(df):
   df["commission_amount"] = df.gross_profit * df.commission_rate
   return df
 
+#handle commission
+def is_subset(list_a, list_b):
+  '''check if list_b is a subset of list_a'''
+  return all([item in list_a for item in list_b])
+
+
+def add_gp_col(df):
+  required_header = ['hours' ,'bill_rate' ,'pay_rate', 'vendor_fee_rate' ,'payroll_fee_rate']
+  if not is_subset(df.columns.tolist(), required_header):
+    msg = f'Missing headers. Require {",".join(required_header)}. Found {",".join(df.columns.tolist())}'
+    raise RuntimeError(msg)
+  df["bill_amount"] = df.hours * df.bill_rate
+  df["pay_amount"] = df.hours * df.pay_rate
+  df["vendor_fee"] = df.bill_amount * df.vendor_fee_rate
+  df["payroll_fee"] = df.pay_amount * df.payroll_fee_rate
+  df["gross_profit"] = df.bill_amount - df.pay_amount - df.vendor_fee - df.payroll_fee
+  return df
+
+
+def add_commission_col(df):
+  required_header = ['gross_profit', 'commission_rate']
+  if not is_subset(df.columns.tolist(), required_header):
+    msg = f'Missing headers. Require {",".join(required_header)}. Found {",".join(df.columns.tolist())}'
+    raise RuntimeError(msg)
+  df["commission_amount"] = df.gross_profit * df.commission_rate
+  return df
+
+
+def get_commission_main_df(commission_main_sh):
+  ws_name="main"
+  dtype_map = {
+      'timestamp': 'datetime64',
+      'week_ending': 'datetime64',
+      'hours': 'float64',
+      'commission_rate': 'float64',
+  }
+
+  df = ws2df(commission_main_sh, ws_name, dtype_map)
+  currency2float(df, ['bill_rate', 'pay_rate', 'bill_amount', 'pay_amount', 
+                           'vendor_fee', 'payroll_fee', 'gross_profit', 'commission_amount'])
+  df = df.dropna(subset=["id", "week_ending"])
+  return df
+
+def write_commission_to_gsheet(commission_df, commission_main_sh_name): 
+  commission_main_sh = gc.open(commission_main_sh_name)
+  
+  new_commission_df = commission_df.copy()
+  ts_now = datetime.now(timezone('US/Eastern'))
+  new_commission_df['timestamp'] = ts_now.strftime("%Y-%m-%d %H:%M:%S")
+  new_commission_df['commission_paid'] = ""
+
+  commission_main_df = get_commission_main_df(commission_main_sh)
+
+  required_header = ['employee_email', 'id', 'name' ,'role' ,'week_ending' ,'hours', 
+                      'client', 'timestamp', 'bill_rate','pay_rate' ,'bill_amount' 
+                      ,'pay_amount' ,'vendor_fee' ,'payroll_fee' ,'gross_profit' 
+                      ,'commission_rate' ,'commission_amount', 'commission_paid']
+  df_cols = new_commission_df.columns.tolist()
+  if not is_subset(df_cols, required_header):
+    msg = f'Missing headers. Require {",".join(required_header)}. Found {",".join(df_cols)}'
+    raise RuntimeError(msg)
+
+  keys = ['employee_email', 'id', 'role', 'week_ending']
+  #get commissions that are not in to the main gsheet
+  new_commission_df = (new_commission_df
+                      .merge(commission_main_df[keys], how='left', on=keys, indicator=True)
+                      .query("_merge == 'left_only'"))
+
+  union_commission_df = pd.concat([new_commission_df[required_header], commission_main_df])
+
+  union_commission_df = union_commission_df.sort_values(by=["week_ending", "employee_email", "id", "role"])
+  df2ws(commission_main_sh, 'main', union_commission_df)
+
