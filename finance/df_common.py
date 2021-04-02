@@ -132,8 +132,7 @@ def add_commission_col(df):
   return df
 
 
-def get_commission_main_df(commission_main_sh):
-  ws_name="main"
+def get_commission_df(commission_main_sh, ws_name):
   dtype_map = {
       'timestamp': 'datetime64',
       'week_ending': 'datetime64',
@@ -153,7 +152,7 @@ def write_commission_to_gsheet(commission_df, commission_main_sh):
   new_commission_df['timestamp'] = ts_now.strftime("%Y-%m-%d %H:%M:%S")
   new_commission_df['commission_paid'] = ""
 
-  commission_main_df = get_commission_main_df(commission_main_sh)
+  commission_main_df = get_commission_main_df(commission_main_sh, "main")
 
   required_header = ['employee_email', 'id', 'name' ,'role' ,'week_ending' ,'hours', 
                       'client', 'timestamp', 'bill_rate','pay_rate' ,'bill_amount' 
