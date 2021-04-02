@@ -147,7 +147,8 @@ def get_commission_main_df(commission_main_sh):
   df = df.dropna(subset=["id", "week_ending"])
   return df
 
-def write_commission_to_gsheet(commission_df, commission_main_sh_name): 
+def write_commission_to_gsheet(commission_df, commission_main_sh_name):
+  global gc
   commission_main_sh = gc.open(commission_main_sh_name)
   
   new_commission_df = commission_df.copy()
