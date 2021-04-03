@@ -76,7 +76,7 @@ def writeLog(sheet, level: LEVELS, ws_name, message, records):
     record_csv = ",".join([str(r) for r in record])
     record_df = record_df.append(pd.DataFrame([[ts, level, ws_name, message, record_csv]], columns=log_header))
 
-  print(str(records))
+  print(record_df.to_string())
   log_df = ws2df(sh, ws, {})
   log_df = log_df.append(record_df)
   df2ws(sh, ws, log_df)
