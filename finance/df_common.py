@@ -8,7 +8,11 @@ from google.colab import auth
 import numpy as np
 from gspread_dataframe import get_as_dataframe, set_with_dataframe
 import pytz
-from pytz import timezone
+
+def print_current_est_dt():
+  eastern = timezone('US/Eastern')
+  now = datetime.now(eastern)
+  print (now.strftime("%Y-%m-%d %H:%M:%S"))
 
 #convert `$` to float
 def currency2float(df, fields):
