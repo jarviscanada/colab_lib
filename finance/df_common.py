@@ -159,7 +159,7 @@ def get_new_records(df_a, df_b, keys):
 
 def write_commission_to_gsheet(commission_df, commission_sh):  
   commission_df = commission_df.copy()
-  ts_now = datetime.now(timezone('US/Eastern'))
+  ts_now = datetime.now(pytz.timezone('US/Eastern'))
   commission_df['timestamp'] = ts_now.strftime("%Y-%m-%d %H:%M:%S")
   commission_df['commission_paid'] = ""
 
