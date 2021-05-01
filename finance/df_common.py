@@ -70,7 +70,7 @@ def clear_log(sheet):
 def writeLog(sheet, level: LEVELS, ws_name, message, records):
   sh = sheet
   ws = "Log"
-  eastern = timezone('US/Eastern')
+  eastern = pytz.timezone('US/Eastern')
   ts = str(datetime.now(eastern))
 
   log_header = ["timestamp", "level", "worksheet_name", "message", "record"]
