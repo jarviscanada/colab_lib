@@ -13,7 +13,9 @@ import pytz
 def print_current_est_dt():
   eastern = pytz.timezone('US/Eastern')
   now = datetime.now(eastern)
-  print (now.strftime("%Y-%m-%d %H:%M:%S"))
+  now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+  print (now_str)
+  return now_str
 
 #convert `$` to float
 def currency2float(df, fields):
