@@ -9,13 +9,16 @@ import numpy as np
 from gspread_dataframe import get_as_dataframe, set_with_dataframe
 import pytz
 
-
+def get_current_est_dt():
+  eastern = pytz.timezone('US/Eastern')
+  now = datetime.now(eastern)
+  return now.strftime("%Y-%m-%d %H:%M:%S")
+  
 def print_current_est_dt():
   eastern = pytz.timezone('US/Eastern')
   now = datetime.now(eastern)
-  now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+  now_str = get_current_est_dt()
   print (now_str)
-  return now_str
 
 #convert `$` to float
 def currency2float(df, fields):
